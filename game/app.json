@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "FlappyMali",
+    "slug": "game",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon-1.png",
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/splash-1.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon-1.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.siboraberisha.game"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon-1.png"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "74bfc049-ee50-433c-8e94-6a7c01d62902"
+      }
+    },
+    "owner": "siboraberisha"
+  }
+}
