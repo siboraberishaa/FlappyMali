@@ -49,7 +49,6 @@ cd game
 npm install
 ````
 
-```
 
 
 ## License
