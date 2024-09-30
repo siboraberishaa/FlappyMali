@@ -16,6 +16,7 @@ import { useNavigation } from "@react-navigation/native";
     return (
       <Modall animationType="slide" transparent={true} visible={modalVisible}>
         <View style={[styles.container, { position: "relative" }]}>
+            <Text style={styles.modalText2}>Game Over</Text>
           <View style={styles.modalView}>
             
             
@@ -101,8 +102,12 @@ import { useNavigation } from "@react-navigation/native";
       paddingTop: 10,
       textAlign: "center",
       fontSize: 50,
-    //   fontWeight: 'bold'
-    fontFamily: 'Flappy-Birdy'
+      fontFamily: 'Flappy-Birdy'
+    },
+    modalText2: {
+      textAlign: "center",
+      fontSize: 80,
+      fontFamily: 'Flappy-Birdy'
     },
     modalNumber: {
       paddingBottom: 5,

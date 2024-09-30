@@ -1,12 +1,12 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import CharacterModal from '../components/CharacterModal';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const [ modalVisible, setModalVisible ] = useState(false)
 
   return (
     <View style={styles.container}>
@@ -29,10 +29,16 @@ const HomeScreen = () => {
 
       {/* Buttons Inline */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.button}>
+        <TouchableOpacity onPress={() => {
+          setModalVisible(true)}} style={styles.button}>
           <Text style={styles.buttonText}>Select Character</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Game')} style={styles.button}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('Game');
+          }}
+          style={styles.button}
+        >
           <Text style={styles.buttonText}>Start Game</Text>
         </TouchableOpacity>
       </View>
@@ -55,13 +61,13 @@ const styles = StyleSheet.create({
   },
   cloudImage: {
     width: 700,
-    height: 720,  // Increase the height for bigger clouds
+    height: 720,
   },
   titleContainer: {
-    flexDirection: 'row',  // Align items horizontally
-    alignItems: 'center',  // Center items vertically within the row
+    flexDirection: 'row',
+    alignItems: 'center',
     position: 'absolute',
-    top: '40%',  // Adjust this value to control how far below the clouds the text appears
+    top: '40%',
   },
   titleText: {
     fontFamily: 'Flappy-Birdy',
@@ -71,30 +77,29 @@ const styles = StyleSheet.create({
   birdImage: {
     width: 50,
     height: 50,
-    marginLeft: 10, 
+    marginLeft: 10,
   },
   buttonContainer: {
-    position: 'absolute',  // Use absolute positioning
-    bottom: 100,  // Adjust this value for the desired button placement
-    flexDirection: 'row',  // Align buttons horizontally
-    justifyContent: 'space-between',  // Add space between the buttons
-    width: '100%',  // Adjust the width as needed to control button spacing
+    position: 'absolute',
+    bottom: 100,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
   },
   button: {
-    flex: 1,  // Allow buttons to equally share the space
-    marginHorizontal: 10,  // Add horizontal spacing between buttons
-    paddingVertical: 10,  // Vertical padding for button text
+    flex: 1,
+    marginHorizontal: 10,
+    paddingVertical: 10,
     paddingHorizontal: 10,
-    backgroundColor: '#fff',  // Button background color (optional)
-    alignItems: 'center',  // Center text within the button
+    backgroundColor: '#fff',
+    alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 7,  // Optional: rounded corners
+    borderRadius: 7,
   },
   buttonText: {
-    // fontFamily: 'Flappy-Birdy',
     fontSize: 20,
     color: '#87ceeb',
     textAlign: 'center',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
 });

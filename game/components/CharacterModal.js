@@ -67,18 +67,18 @@ const CharacterModal = ({ modalVisible, setModalVisible }) => {
           resizeMode="contain"
           style={styles.characterImage}
         />
-        <Text style={styles.characterText}>{characterName}</Text>
+        {/* <Text style={styles.characterText}>{characterName}</Text> */}
       </View>
     </TouchableOpacity>
   );
 
   return (
+    <>
+    
     <Modall animationType="slide" transparent={true} visible={modalVisible}>
       <View style={[styles.container, { position: "relative" }]}>
         <View style={styles.modalView}>
-          {loading ? ( // Show loader if loading is true
-            <ActivityIndicator size="large" color="#0000ff" />
-          ) : (
+          
             <View style={styles.characterGrid}>
               {renderCharacterItem(characters.mali, "Mali", require("../assets/sprites/blue-bird.png"))}
               {renderCharacterItem(characters.hana, "Hana", require("../assets/sprites/ch-5.png"))}
@@ -87,11 +87,11 @@ const CharacterModal = ({ modalVisible, setModalVisible }) => {
               {renderCharacterItem(characters.saranda, "Saranda", require("../assets/sprites/ch-4.png"))}
               {renderCharacterItem(characters.aria, "Aria", require("../assets/sprites/ch-1.png"))}
             </View>
-          )}
+        
 
-                {/*<TouchableOpacity onPress={() => navigation.navigate('Game')} style={[styles.button, styles.buttonOpen, {marginTop: 20}]}>
+                {/* <TouchableOpacity onPress={() => navigation.navigate('Game')} style={[styles.button, styles.buttonOpen, {marginTop: 20}]}>
                   <Text style={styles.buttonText}>Start Game</Text>
-                </TouchableOpacity>*/}
+                </TouchableOpacity> */}
 
           <Pressable
             style={[styles.buttonClose, { position: "absolute", top: 0, right: 0 }]}
@@ -102,6 +102,7 @@ const CharacterModal = ({ modalVisible, setModalVisible }) => {
         </View>
       </View>
     </Modall>
+    </>
   );
 };
 

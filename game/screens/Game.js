@@ -20,7 +20,7 @@ import { GestureHandlerRootView, GestureDetector, Gesture } from 'react-native-g
 import Modal from '../components/Modal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-
+import { Audio } from 'expo-av';
 
 const GRAVITY = 1000;
 const JUMP_FORCE = -500;
@@ -40,6 +40,8 @@ const Game = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const [highScore, setHighScore] = useState(0);
   const [characterKey, setCharacterKey] = useState("blue-bird"); // Store the key instead of the image path
+  const [sound, setSound] = useState();
+  // const [tappSound, setTappSound] = useState();
 
   const characterImages = {
     "blue-bird": require("../assets/sprites/blue-bird.png"),
@@ -108,6 +110,50 @@ const Game = () => {
   }, []);
 
 
+  async function playSound() {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../assets/sounds/sound-1.mp3')
+    );
+    setSound(sound);
+    await sound.playAsync();
+  }
+
+  async function playCrashSound() {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../assets/sounds/sound-2.mp3') // Add your crash sound file here
+    );
+    setSound(sound);
+    await sound.playAsync();
+  }
+
+
+  // async function tapSound() {
+  //   const { sound } = await Audio.Sound.createAsync(
+  //     require('../assets/sounds/sound-3.mp3') // Add your tap sound file here
+  //   );
+  //   setTappSound(sound);
+  //   await sound.playAsync();
+  // }
+  
+
+  useEffect(() => {
+    return sound
+      ? () => {
+          sound.unloadAsync(); // Clean up the sound when the component unmounts
+        }
+      : undefined;
+  }, [sound]);
+
+
+  // useEffect(() => {
+  //   return tappSound
+  //     ? () => {
+  //         tappSound.unloadAsync(); // Clean up the sound when the component unmounts
+  //       }
+  //     : undefined;
+  // }, [tappSound]);
+
+
   useEffect(() => {
     // Load high score from AsyncStorage when the game starts
     const loadHighScore = async () => {
@@ -156,7 +202,7 @@ const Game = () => {
 
 
   const pipesSpeed = useDerivedValue(() => {
-    return interpolate(score, [0, 20], [1, 2]);
+    return interpolate(score, [0, 20], [1, 1.5]);
   });
 
   const obstacles = useDerivedValue(() => [
@@ -254,6 +300,7 @@ const Game = () => {
         previousValue > middle
       ) {
         runOnJS(setScore)(score + 1);
+        runOnJS(playSound)();
       }
     }
   );
@@ -293,6 +340,7 @@ const Game = () => {
         if (!gameOver.value) {
           gameOver.value = true;
           runOnJS(triggerFlash)(); // Trigger flash on collision
+          runOnJS(playCrashSound)();
           runOnJS(setShowRestartButton)(true);
           runOnJS(setGravityToZero)(); // Make the bird fall after flash
         }
@@ -356,33 +404,35 @@ const Game = () => {
     runOnJS(setGameStarted)(true);
     birdYVelocity.value = JUMP_FORCE;
     runOnJS(startGame)(); // Start the game mechanics
+    // runOnJS(tapSound)();
   } else if (!gameOver.value) {
     // Subsequent taps: apply jump force
     birdYVelocity.value = JUMP_FORCE;
+    // runOnJS(tapSound)();
   }
 });
 
   
 
-  const birdTransform = useDerivedValue(() => {
+const birdTransform = useDerivedValue(() => {
+  if (gameOver.value) {
+    // Rotate the bird to point straight down when the game is over
+    return [{ rotate: Math.PI / 2 }]; // 90 degrees (pointing downward)
+  }
 
-    if (gameOver.value) {
-      // Rotate the bird to point straight down on game over
-      return [{ rotate: Math.PI / 2 }];
-    }
+  // When falling: Rotate the bird downward, and when jumping: Rotate it back horizontally
+  return [
+    {
+      rotate: interpolate(
+        birdYVelocity.value,
+        [JUMP_FORCE, 0, 500], // from upward (jump) to downward (fall)
+        [-0.3, 0, Math.PI / 2], // from slightly upward (-0.3 radians) to straight down (90 degrees)
+        Extrapolation.CLAMP
+      ),
+    },
+  ];
+});
 
-
-    return [
-      {
-        rotate: interpolate(
-          birdYVelocity.value,
-          [-500, 0],
-          [0.2, 0],
-          Extrapolation.CLAMP
-        ),
-      },
-    ];
-  });
 
   const birdOrigin = useDerivedValue(() => {
     return { x: width / 4 + 32, y: birdY.value + 24 };
@@ -468,14 +518,39 @@ const Game = () => {
 
 
       </GestureDetector>
-        {!showRestartButton && <Ttext style={{position: 'absolute',
-                      top: 100,
-                      left: width / 2 - 30,
-                      fontSize: 50,
-                      // fontWeight: 'bold',
-                      fontFamily: 'Flappy-Bird',
-                      color: '#000',
-                      }}>{score.toString()}</Ttext>}
+      {!gameStarted ? (
+  <Ttext
+    style={{
+      position: 'absolute',
+      top: 130,
+      left: 0,
+      right: 0,
+      textAlign: 'center',
+      fontSize: 80,
+      fontFamily: 'Flappy-Birdy',
+      color: '#000',
+    }}
+  >
+    GET READY
+  </Ttext>
+) : (
+  !showRestartButton && (
+    <Ttext
+      style={{
+        position: 'absolute',
+        top: 100,
+        left: 0,
+        right: 0,
+        textAlign: 'center',
+        fontSize: 50,
+        fontFamily: 'Flappy-Bird',
+        color: '#000',
+      }}
+    >
+      {score.toString()}
+    </Ttext>
+  )
+)}
 
       
       <Animated.View style={[StyleSheet.absoluteFillObject, flashStyle, { backgroundColor: '#fff' }]} />
